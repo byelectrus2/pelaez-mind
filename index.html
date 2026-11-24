@@ -403,7 +403,6 @@ function fallback(){
   if(!fbBag.length){const src=Object.values(T).filter(o=>S.sel.includes(o.n));const use=src.length?src:Object.values(T);
     const seen=new Set(S.seen);
     use.forEach(o=>o.f.forEach(d=>{const key="lib:"+d.slice(0,60);if(!seen.has(key)&&!S.bad.includes(key))fbBag.push({key,t:o.n,d,p:"",f:"",q:null})}));
-    if(!fbBag.length)use.forEach(o=>o.f.forEach(d=>fbBag.push({key:"lib:"+d.slice(0,60),t:o.n,d,p:"",f:"",q:null})));
     shuffle(fbBag)}
   return fbBag.pop();
 }
@@ -419,11 +418,17 @@ function next(fromLoad){
     if(!fromLoad){cur={loading:true};drawLoad();if(!loadingDb&&!genBusy.size)loadDb();return}
     if(genBusy.size||loadingDb)return;
     it=fallback();
+    if(!it){drawDone();return}
   }
   if(queue.length<4)loadDb();
-  cur=it;S.cnt++;S.seen.push(it.key);if(S.seen.length>3000)S.seen=S.seen.slice(-3000);
+  cur=it;S.cnt++;S.seen.push(it.key);if(S.seen.length>10000)S.seen=S.seen.slice(-10000);
   if(it.q){quizPool.push({...it.q,t:it.t});if(quizPool.length>8)quizPool.shift()}
   tickStreak();gain(5);drawFact(it);
+}
+function drawDone(){cur={done:true};
+  setCard(`<div class="body load"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="28" fill="#c8f542"/><path d="M20 33l8 8 16-18" fill="none" stroke="#14122b" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg><p class="fact" style="text-align:center">¡Viste todos los datos de hoy!</p><p style="margin:0">Llevás ${S.cnt} datos aprendidos. Mañana hay datos nuevos: volvé para no perder tu racha 🔥</p></div>`,"#c8f542");
+  $("acts").style.visibility="visible";$("like").disabled=$("copy").disabled=true;$("next").textContent="Buscar datos nuevos";
+  $("mode").textContent="No repetimos datos: cada uno lo ves una sola vez.";
 }
 function setCard(html,c){const k=$("card");k.style.setProperty("--c",c);k.innerHTML=html;k.classList.remove("anim");void k.offsetWidth;k.classList.add("anim")}
 function drawLoad(){setCard(`<div class="body load"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="26" fill="none" stroke="var(--soft)" stroke-width="7"/><path class="spin" d="M32 6a26 26 0 0 1 26 26" fill="none" stroke="#4b3df5" stroke-width="7" stroke-linecap="round"/></svg>Pelaez está buscando datos para vos…</div>`,"#4b3df5");$("acts").style.visibility="hidden"}
