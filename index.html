@@ -22,7 +22,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Plus Jakarta
 button,input{font:inherit;color:inherit}button{cursor:pointer}
 button:focus-visible,input:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
 .app{max-width:540px;margin:0 auto;padding:14px 16px 112px}
-.top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:16px}
 .logo{display:flex;align-items:center;gap:9px;font-weight:800;font-size:20px;letter-spacing:-.01em}
 .logo svg{width:34px;height:34px;flex:none}
 .logo b{color:var(--brand)}
@@ -92,7 +92,7 @@ h2{font-size:24px;line-height:1.15;margin:6px 0 12px;font-weight:800}
 .stat span{font-size:13px;color:var(--mut);font-weight:600}
 .stat.hl{background:var(--brand);border-color:var(--brand);color:#fff}.stat.hl span{color:#dcd8ff}
 nav{position:fixed;left:0;right:0;bottom:0;display:flex;justify-content:center;padding:8px 12px calc(8px + env(safe-area-inset-bottom));background:var(--card);border-top:1.5px solid var(--line)}
-nav div{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;width:100%;max-width:540px}
+nav div{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;width:100%;max-width:540px}
 nav button{min-height:54px;border:0;border-radius:14px;background:none;font-weight:700;font-size:13px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;color:var(--mut)}
 nav button svg{width:22px;height:22px}
 nav button[aria-current=page]{color:var(--brand);background:var(--soft)}
@@ -150,14 +150,9 @@ nav button[aria-current=page]{color:var(--brand);background:var(--soft)}
 <div class="app">
   <div class="top">
     <div class="logo"><svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="12" fill="#4b3df5"/><path d="M20 9c-5 0-8.5 3.4-8.5 7.8 0 2.6 1.2 4.6 3 6.1V28h11v-5.1c1.8-1.5 3-3.5 3-6.1C28.5 12.4 25 9 20 9z" fill="none" stroke="#fff" stroke-width="2.4" stroke-linejoin="round"/><path d="M16 31.5h8" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/><path d="M21.5 13l-3.5 5h4l-2.5 5" fill="none" stroke="#c8f542" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Pelaez <b>Mind</b></span></div>
-    <div class="pills">
-      <div class="pill" title="Racha de días"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c1 4 5 5.5 5 11a5 5 0 0 1-10 0c0-2.5 1.2-4 2.5-5 0 2 1 3 2 3 0-3-1-6 .5-9z" fill="#ff6a4d"/></svg><span id="streak">0</span></div>
-      <div class="pill" title="Nivel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.7-5.2 4.6 1.5 6.8L12 17l-6.1 3.4 1.5-6.8L2.2 9l6.9-.7z" fill="#c8f542" stroke="#8fb51a" stroke-width="1.2"/></svg>Nv <span id="lvl">1</span></div>
-    </div>
   </div>
 
   <section id="v-feed">
-    <div class="xp"><div class="row"><span id="today">Hoy: 0 / 0</span><b id="xptxt">Nivel 1 · 0 / 100 XP</b></div><div class="bar"><i id="daybar" style="width:0%"></i></div></div>
     <article class="card" id="card"></article>
     <div class="actions" id="acts">
       <button class="ib" id="like" aria-label="Me gustó" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-9-8.6C1.6 8.3 3.5 5 6.7 5c2 0 3.4 1.1 5.3 3 1.9-1.9 3.3-3 5.3-3 3.2 0 5.1 3.3 3.7 6.4C19 15.6 12 20 12 20z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></button>
@@ -173,18 +168,11 @@ nav button[aria-current=page]{color:var(--brand);background:var(--soft)}
     <div id="favlist"></div>
   </section>
 
-  <section id="v-me" hidden>
-    <h2>Tu progreso</h2>
-    <div class="stats" id="stats"></div>
-    <p class="note">No hace falta cuenta: tu racha, tu nivel y tus favoritos se guardan en este dispositivo. Si borrás los datos del navegador o cambiás de celular, empezás de cero.</p>
-    <p class="note">Cómo cuidamos la info: cada dato se revisa antes de publicarse (dato, explicación, quiz y fuente). Si varias personas reportan un dato, se oculta automáticamente.</p>
-  </section>
 </div>
 
 <nav id="nav"><div>
   <button data-v="feed"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c-4.4 0-7.5 3-7.5 6.9 0 2.3 1 4 2.6 5.4V20h9.8v-4.7c1.6-1.4 2.6-3.1 2.6-5.4C19.5 6 16.4 3 12 3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>Hoy</button>
   <button data-v="favs"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-9-8.6C1.6 8.3 3.5 5 6.7 5c2 0 3.4 1.1 5.3 3 1.9-1.9 3.3-3 5.3-3 3.2 0 5.1 3.3 3.7 6.4C19 15.6 12 20 12 20z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>Favoritos</button>
-  <button data-v="me"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V10M12 20V4M19 20v-7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>Progreso</button>
 </div></nav>
 <div class="toast" id="toast" role="status"></div>
 
@@ -324,16 +312,9 @@ const save=()=>{for(const k in S)sv(k,S[k])};
 let todayList=[],older=null,queue=[],quizPool=[],cur=null,view="feed",since=0,mode="today",batchDate="";
 
 /* ---------- XP, racha, progreso del día ---------- */
-function hud(){const lv=Math.floor(S.xp/100);
-  $("lvl").textContent=lv+1;$("streak").textContent=S.streak.n;
-  $("xptxt").textContent="Nivel "+(lv+1)+" · "+(S.xp%100)+" / 100 XP";
-  const seen=new Set(S.seen),tot=todayList.length,read=todayList.filter(x=>seen.has(x.key)).length;
-  $("today").textContent=tot?("Hoy: "+read+" / "+tot+" datos"):"Hoy";
-  $("daybar").style.width=(tot?Math.round(100*read/tot):0)+"%";
-}
-function gain(n){const b=Math.floor(S.xp/100);S.xp+=n;const a=Math.floor(S.xp/100);
-  if(a>b)toast("¡Subiste a nivel "+(a+1)+"! Ahora sos "+TITLES[Math.min(a,TITLES.length-1)]);save();hud()}
-function tickStreak(){const t=day();if(S.streak.d===t)return;S.streak={d:t,n:S.streak.d===day(1)?S.streak.n+1:1};save();if(S.streak.n>1)toast("🔥 Racha de "+S.streak.n+" días");hud()}
+function hud(){}
+function gain(n){}
+function tickStreak(){}
 
 /* ---------- datos ---------- */
 const mapRow=r=>({key:"id:"+r.id,id:r.id,t:r.tema_nombre,d:r.dato,p:r.porque||"",f:r.fuente||"",
@@ -371,7 +352,7 @@ function markRead(it){ // se cuenta como leído al tocar "Siguiente"
 function setCard(html,c){const k=$("card");k.style.setProperty("--c",c);k.innerHTML=html;k.classList.remove("anim");void k.offsetWidth;k.classList.add("anim")}
 function next(){
   if(cur&&cur.d)markRead(cur);
-  if(since>=5&&quizPool.length&&!(cur&&cur.quiz)){since=0;showQuiz(quizPool.splice(Math.floor(Math.random()*quizPool.length),1)[0]);return}
+  if(false){since=0;showQuiz(quizPool.splice(Math.floor(Math.random()*quizPool.length),1)[0]);return}
   const it=queue.shift();
   if(!it){drawDone();return}
   cur=it;tickStreak();drawFact(it);
@@ -399,7 +380,7 @@ async function drawDone(){
   cur={done:true};$("like").disabled=$("copy").disabled=true;$("report").hidden=true;
   const prev=mode==="today"?(await loadOlder()).length:0;
   const tot=todayList.length;
-  setCard(`<div class="body load done"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="28" fill="#c8f542"/><path d="M20 33l8 8 16-18" fill="none" stroke="#14122b" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg><p class="fact">${mode==="today"?"¡Leíste los "+tot+" datos de hoy!":"¡Te pusiste al día!"}</p><p>Llevás ${S.cnt} datos aprendidos en total. Mañana hay datos nuevos: volvé para no perder tu racha 🔥</p></div>`,"#c8f542");
+  setCard(`<div class="body load done"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="28" fill="#c8f542"/><path d="M20 33l8 8 16-18" fill="none" stroke="#14122b" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg><p class="fact">${mode==="today"?"¡Leíste los "+tot+" datos de hoy!":"¡Te pusiste al día!"}</p><p>Mañana hay datos nuevos. ¡Te esperamos!</p></div>`,"#c8f542");
   if(prev){$("next").textContent="Leer "+prev+" datos que te perdiste →";$("next").onclick=()=>{mode="older";queue=older.slice();older=[];$("next").onclick=null;cur=null;next()}}
   else{$("next").textContent="Volvé mañana 👋";$("next").onclick=()=>toast("Mañana hay datos nuevos")}
   $("mode").textContent="No repetimos datos: cada uno lo ves una sola vez.";
@@ -427,9 +408,9 @@ function drawFavs(){const L=$("favlist");
 function drawMe(){const lv=Math.floor(S.xp/100),seen=new Set(S.seen),read=todayList.filter(x=>seen.has(x.key)).length;
   const s=[["Nivel "+(lv+1),TITLES[Math.min(lv,TITLES.length-1)],1],[S.streak.n+(S.streak.n===1?" día":" días"),"Racha actual"],[read+" / "+todayList.length,"Datos de hoy"],[S.cnt,"Datos aprendidos"],[S.qok,"Quizzes acertados"],[S.favs.length,"Favoritos"]];
   $("stats").innerHTML=s.map(x=>`<div class="stat${x[2]?' hl':''}"><b>${esc(x[0])}</b><span>${esc(x[1])}</span></div>`).join("")}
-function show(v){view=v;["feed","favs","me"].forEach(x=>$("v-"+x).hidden=x!==v);
+function show(v){view=v;["feed","favs"].forEach(x=>$("v-"+x).hidden=x!==v);
   document.querySelectorAll("nav button").forEach(b=>{if(b.dataset.v===v)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});
-  if(v==="favs")drawFavs();if(v==="me")drawMe();hud();window.scrollTo(0,0)}
+  if(v==="favs")drawFavs();hud();window.scrollTo(0,0)}
 
 /* ---------- eventos ---------- */
 $("next").addEventListener("click",()=>{if(!$("next").onclick)next()});
