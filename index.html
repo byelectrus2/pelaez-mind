@@ -322,7 +322,7 @@ const mapRow=r=>({key:"id:"+r.id,id:r.id,t:r.tema_nombre,d:r.dato,p:r.porque||""
 const libList=()=>Object.values(T).flatMap(o=>o.f.map(d=>({key:"lib:"+d.slice(0,60),t:o.n,d,p:"",f:"",q:null})));
 async function loadToday(){
   if(sb){try{
-    const {data:last,error:e1}=await sb.from("datos").select("publicado").order("publicado",{ascending:false}).limit(1);
+    const {data:last,error:e1}=await sb.from("datos").select("publicado").lte("publicado",day()).order("publicado",{ascending:false}).limit(1);
     if(e1)throw e1;
     if(last&&last.length){batchDate=last[0].publicado;
       const {data,error}=await sb.from("datos").select("id,tema_nombre,dato,porque,fuente,pregunta,opciones,correcta").eq("publicado",batchDate).order("id").limit(500);
