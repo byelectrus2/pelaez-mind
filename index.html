@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Pelaez Mind · Aprendé algo nuevo en cada toque</title>
-<meta name="description" content="Datos curiosos sin fin sobre lo que te gusta, verificados, con quiz, niveles y racha.">
+<meta name="description" content="100 datos curiosos nuevos todos los días, iguales para todos. Sin registro, con quiz, niveles y racha.">
 <meta name="theme-color" content="#4b3df5">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 40 40%22%3E%3Crect width=%2240%22 height=%2240%22 rx=%2212%22 fill=%22%234b3df5%22/%3E%3Cpath d=%22M21.5 11l-5 8h6l-3.5 9%22 fill=%22none%22 stroke=%22%23c8f542%22 stroke-width=%223.5%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -113,66 +113,55 @@ nav button[aria-current=page]{color:var(--brand);background:var(--soft)}
 .pw{position:relative}.pw input{padding-right:84px}
 .pw button{position:absolute;right:6px;top:6px;height:40px;padding:0 12px;border:0;border-radius:10px;background:var(--soft);font-weight:700;font-size:14px}
 .msg{min-height:22px;margin:10px 0 0;font-weight:700;color:var(--coral)}.msg.ok{color:#2f8a3a}
+.intro{position:fixed;inset:0;z-index:50;background:radial-gradient(120% 80% at 50% 0%,#6a5cff 0%,#4b3df5 45%,#2a1fb0 100%);color:#fff;display:grid;place-items:center;overflow:hidden;transition:opacity .45s,transform .45s}
+.intro.out{opacity:0;transform:scale(1.04)}
+.intro-in{position:relative;text-align:center;padding:24px;max-width:420px}
+.i-date{margin:0 0 6px;font-weight:700;color:#dcd8ff}
+.i-num{font-size:clamp(96px,32vw,168px);line-height:.95;font-weight:800;letter-spacing:-.04em;color:#c8f542;text-shadow:0 8px 0 #2a1fb0;font-variant-numeric:tabular-nums}
+.i-txt{font-size:clamp(22px,6vw,28px);font-weight:800;margin:10px 0 6px;line-height:1.15}
+.i-sub{margin:0 0 26px;color:#dcd8ff}
+.i-go{min-height:56px;padding:0 34px;border:0;border-radius:16px;background:#c8f542;color:#14122b;font-weight:800;font-size:19px;box-shadow:0 6px 0 #8fb51a;opacity:0;transform:translateY(10px);transition:.35s}
+.intro.ready .i-go{opacity:1;transform:none}
+.orbit{position:absolute;inset:0;pointer-events:none}
+.orbit span{position:absolute;left:50%;top:50%;padding:6px 12px;border-radius:99px;background:var(--c);color:#14122b;font-weight:800;font-size:13px;white-space:nowrap;opacity:.9;
+  transform:rotate(calc(360deg/var(--n)*var(--i))) translateY(calc(-1*min(44vh,44vw) - 40px)) rotate(calc(-360deg/var(--n)*var(--i)));animation:pop .5s cubic-bezier(.2,1.4,.4,1) both,flo 4s ease-in-out infinite alternate;animation-delay:calc(var(--i)*90ms),calc(var(--i)*90ms + .5s)}
+@keyframes pop{from{scale:0;opacity:0}}
+@keyframes flo{to{scale:1.08}}
+.orbit span{translate:-50% -50%}
+@media(max-width:600px){.orbit span{font-size:11px;padding:4px 9px;opacity:.35}}
+@media(prefers-reduced-motion:reduce){.orbit span{animation:none}.intro,.i-go{transition:none}}
+.done .fact{text-align:center}.done p{margin:0}
 .note{font-size:13px;color:var(--mut);margin-top:18px}
 [hidden]{display:none!important}
 </style>
 </head>
 <body>
+<div id="intro" class="intro" hidden>
+  <div class="orbit" aria-hidden="true" id="orbit"></div>
+  <div class="intro-in">
+    <p class="i-date" id="i-date"></p>
+    <div class="i-num" id="i-num">0</div>
+    <p class="i-txt">datos curiosos nuevos hoy</p>
+    <p class="i-sub">Los mismos para todos. ¿Llegás a leerlos todos?</p>
+    <button class="i-go" id="i-go">¡Vamos! →</button>
+  </div>
+</div>
+
 <div class="app">
   <div class="top">
     <div class="logo"><svg viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="12" fill="#4b3df5"/><path d="M20 9c-5 0-8.5 3.4-8.5 7.8 0 2.6 1.2 4.6 3 6.1V28h11v-5.1c1.8-1.5 3-3.5 3-6.1C28.5 12.4 25 9 20 9z" fill="none" stroke="#fff" stroke-width="2.4" stroke-linejoin="round"/><path d="M16 31.5h8" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/><path d="M21.5 13l-3.5 5h4l-2.5 5" fill="none" stroke="#c8f542" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Pelaez <b>Mind</b></span></div>
-    <div class="pills" id="pills" hidden>
+    <div class="pills">
       <div class="pill" title="Racha de días"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c1 4 5 5.5 5 11a5 5 0 0 1-10 0c0-2.5 1.2-4 2.5-5 0 2 1 3 2 3 0-3-1-6 .5-9z" fill="#ff6a4d"/></svg><span id="streak">0</span></div>
       <div class="pill" title="Nivel"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.9 6.3 6.9.7-5.2 4.6 1.5 6.8L12 17l-6.1 3.4 1.5-6.8L2.2 9l6.9-.7z" fill="#c8f542" stroke="#8fb51a" stroke-width="1.2"/></svg>Nv <span id="lvl">1</span></div>
     </div>
   </div>
 
-  <section id="v-boot"><div class="card"><div class="body load"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="26" fill="none" stroke="var(--soft)" stroke-width="7"/><path class="spin" d="M32 6a26 26 0 0 1 26 26" fill="none" stroke="#4b3df5" stroke-width="7" stroke-linecap="round"/></svg>Cargando…</div></div></section>
-
-  <section id="v-config" hidden>
-    <h1>Falta un paso</h1>
-    <p class="sub">Abrí <b>index.html</b> y pegá la URL y la clave pública (anon key) de tu proyecto de Supabase en las dos líneas marcadas al principio del script. Está explicado en la guía, paso 4.</p>
-  </section>
-
-  <section id="v-auth" hidden>
-    <h1>Aprendé algo nuevo <em>en cada toque</em>.</h1>
-    <p class="sub">Datos curiosos nuevos todos los días sobre lo que te gusta, revisados, con quiz, niveles y racha. Creá tu cuenta gratis para no perder tu progreso.</p>
-    <div class="tabs" role="group" aria-label="Elegí una opción">
-      <button type="button" id="t-in" aria-pressed="true">Ingresar</button>
-      <button type="button" id="t-up" aria-pressed="false">Crear cuenta</button>
-    </div>
-    <form id="f-auth" class="form" novalidate>
-      <label for="a-mail">Mail</label>
-      <input id="a-mail" type="email" autocomplete="email" inputmode="email" required>
-      <label for="a-pass">Contraseña <span class="hintp">(mínimo 8 caracteres)</span></label>
-      <div class="pw"><input id="a-pass" type="password" autocomplete="current-password" minlength="8" required><button type="button" id="a-eye" aria-label="Mostrar contraseña">Ver</button></div>
-      <button class="big" id="a-btn">Ingresar</button>
-      <p class="msg" id="a-msg" role="status"></p>
-      <button type="button" class="rep" id="a-forgot">Me olvidé la contraseña</button>
-    </form>
-    <form id="f-reset" class="form" hidden>
-      <h2>Elegí una contraseña nueva</h2>
-      <label for="r-pass">Nueva contraseña <span class="hintp">(mínimo 8 caracteres)</span></label>
-      <input id="r-pass" type="password" autocomplete="new-password" minlength="8" required>
-      <button class="big">Guardar contraseña</button>
-      <p class="msg" id="r-msg" role="status"></p>
-    </form>
-  </section>
-
-  <section id="v-onb" hidden>
-    <h1>¿Qué te <em>interesa</em>?</h1>
-    <p class="sub">Elegí uno o varios temas. También podés sumar cualquier tema propio.</p>
-    <div class="chips" id="chips-onb"></div>
-    <form class="add" id="add-onb"><input id="in-onb" maxlength="40" placeholder="Sumá tu tema: Roblox, dinosaurios…" aria-label="Agregar tema propio"><button>Sumar</button></form>
-    <button class="big" id="start" disabled>Empezar a aprender</button>
-  </section>
-
-  <section id="v-feed" hidden>
-    <div class="xp"><div class="row"><span id="ltitle">Curioso</span><b id="xptxt">0 / 100 XP</b></div><div class="bar"><i id="xpbar" style="width:0%"></i></div></div>
+  <section id="v-feed">
+    <div class="xp"><div class="row"><span id="today">Hoy: 0 / 0</span><b id="xptxt">Nivel 1 · 0 / 100 XP</b></div><div class="bar"><i id="daybar" style="width:0%"></i></div></div>
     <article class="card" id="card"></article>
     <div class="actions" id="acts">
-      <button class="ib" id="like" aria-label="Guardar en favoritos" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-9-8.6C1.6 8.3 3.5 5 6.7 5c2 0 3.4 1.1 5.3 3 1.9-1.9 3.3-3 5.3-3 3.2 0 5.1 3.3 3.7 6.4C19 15.6 12 20 12 20z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></button>
-      <button class="ib" id="copy" aria-label="Copiar dato"><svg viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 8V5.5A1.5 1.5 0 0 0 14.5 4h-9A1.5 1.5 0 0 0 4 5.5v9A1.5 1.5 0 0 0 5.5 16H8" fill="none" stroke="currentColor" stroke-width="2"/></svg></button>
+      <button class="ib" id="like" aria-label="Me gustó" aria-pressed="false"><svg viewBox="0 0 24 24"><path d="M12 20s-7-4.4-9-8.6C1.6 8.3 3.5 5 6.7 5c2 0 3.4 1.1 5.3 3 1.9-1.9 3.3-3 5.3-3 3.2 0 5.1 3.3 3.7 6.4C19 15.6 12 20 12 20z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></button>
+      <button class="ib" id="copy" aria-label="Compartir dato"><svg viewBox="0 0 24 24"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7M12 3v12M7 8l5-5 5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
       <button class="next" id="next">Siguiente dato →</button>
     </div>
     <p class="mode" id="mode"></p>
@@ -185,34 +174,26 @@ nav button[aria-current=page]{color:var(--brand);background:var(--soft)}
   </section>
 
   <section id="v-me" hidden>
-    <div class="acct ok"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 21c1-4 4.5-6 8-6s7 2 8 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><div><b id="acct-mail"></b><span id="acct-state"></span><br><button class="rep" id="logout" style="padding:0">Cerrar sesión</button></div></div>
     <h2>Tu progreso</h2>
     <div class="stats" id="stats"></div>
-    <h2>Tus temas</h2>
-    <p class="sub">Tocá para activar o desactivar. Podés sumar cualquier tema que se te ocurra.</p>
-    <div class="chips" id="chips-me"></div>
-    <form class="add" id="add-me"><input id="in-me" maxlength="40" placeholder="Nuevo tema…" aria-label="Agregar tema propio"><button>Sumar</button></form>
-    <p class="note">Cómo cuidamos la info: cada dato se revisa antes de publicarse (dato, explicación, quiz y fuente), y si hay dudas se descarta. Si varias personas reportan un dato, se oculta para todos automáticamente.</p>
+    <p class="note">No hace falta cuenta: tu racha, tu nivel y tus favoritos se guardan en este dispositivo. Si borrás los datos del navegador o cambiás de celular, empezás de cero.</p>
+    <p class="note">Cómo cuidamos la info: cada dato se revisa antes de publicarse (dato, explicación, quiz y fuente). Si varias personas reportan un dato, se oculta automáticamente.</p>
   </section>
 </div>
 
-<nav id="nav" hidden><div>
-  <button data-v="feed"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c-4.4 0-7.5 3-7.5 6.9 0 2.3 1 4 2.6 5.4V20h9.8v-4.7c1.6-1.4 2.6-3.1 2.6-5.4C19.5 6 16.4 3 12 3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>Aprender</button>
+<nav id="nav"><div>
+  <button data-v="feed"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c-4.4 0-7.5 3-7.5 6.9 0 2.3 1 4 2.6 5.4V20h9.8v-4.7c1.6-1.4 2.6-3.1 2.6-5.4C19.5 6 16.4 3 12 3z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>Hoy</button>
   <button data-v="favs"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-9-8.6C1.6 8.3 3.5 5 6.7 5c2 0 3.4 1.1 5.3 3 1.9-1.9 3.3-3 5.3-3 3.2 0 5.1 3.3 3.7 6.4C19 15.6 12 20 12 20z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>Favoritos</button>
-  <button data-v="me"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 21c1-4 4.5-6 8-6s7 2 8 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Perfil</button>
+  <button data-v="me"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V10M12 20V4M19 20v-7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>Progreso</button>
 </div></nav>
 <div class="toast" id="toast" role="status"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 {
-/* =========================================================
-   CONFIGURACIÓN · pegá acá los datos de tu proyecto Supabase
-   (Project Settings > API). La anon key es pública: está bien
-   que vaya en la web. NUNCA pegues acá la service_role key.
-   ========================================================= */
 const SUPABASE_URL = "https://uxilczlzauwvbfvdavrv.supabase.co";
 const SUPABASE_ANON_KEY = "sb_publishable_OuoAhv18wJ9uKKspqLtBkQ_iBNc2d5f";
+const SITE = "pelaez-mind.netlify.app";
 
 const T={
 espacio:{n:"Espacio",c:"#7cc4ff",f:[
@@ -326,223 +307,159 @@ cine:{n:"Cine y series",c:"#ffd166",f:[
 "Casi todo el cine se proyecta a 24 cuadros por segundo, un estándar que viene de la llegada del cine sonoro.",
 "Steven Spielberg tenía 28 años cuando estrenó Tiburón (1975), uno de los primeros grandes éxitos de verano."]}
 };
-const PRE=Object.values(T).map(o=>o.n);
 const COLS=["#7cc4ff","#7be08f","#ffb347","#c9a7ff","#ff6b9a","#5fd4d0","#ff8a5c","#9fb4ff","#ffd166","#b5e48c"];
-const col=n=>{const p=Object.values(T).find(o=>o.n===n);if(p)return p.c;let h=0;for(const ch of n)h=(h*31+ch.charCodeAt(0))>>>0;return COLS[h%COLS.length]};
+const col=n=>{const p=Object.values(T).find(o=>o.n===n);if(p)return p.c;let h=0;for(const ch of String(n))h=(h*31+ch.charCodeAt(0))>>>0;return COLS[h%COLS.length]};
 const TITLES=["Curioso","Aprendiz","Explorador","Investigador","Sabelotodo","Erudito","Mente Pelaez"];
 const esc=s=>String(s).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[m]);
 const $=id=>document.getElementById(id);
-const norm=t=>t.trim().toLowerCase().replace(/\s+/g," ").slice(0,40);
-const day=o=>{const d=new Date(Date.now()-(o||0)*864e5);return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()};
-const shuffle=a=>{for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const pad=n=>String(n).padStart(2,"0");
+const day=o=>{const d=new Date(Date.now()-(o||0)*864e5);return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())};
 const toast=m=>{const t=$("toast");t.textContent=m;t.classList.add("on");clearTimeout(toast.h);toast.h=setTimeout(()=>t.classList.remove("on"),2200)};
+const ld=(k,d)=>{try{const v=localStorage.getItem("pmx-"+k);return v?JSON.parse(v):d}catch(e){return d}};
+const sv=(k,v)=>{try{localStorage.setItem("pmx-"+k,JSON.stringify(v))}catch(e){}};
 
-const configured=!SUPABASE_URL.includes("TU-PROYECTO.")&&!!window.supabase;
-const sb=configured?window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY):null;
+const sb=window.supabase&&!SUPABASE_URL.includes("TU-PROYECTO.")?window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{auth:{persistSession:false}}):null;
+const S={xp:ld("xp",0),streak:ld("streak",{d:"",n:0}),favs:ld("favs",[]),seen:ld("seen",[]),liked:ld("liked",[]),reported:ld("reported",[]),cnt:ld("cnt",0),qok:ld("qok",0)};
+const save=()=>{for(const k in S)sv(k,S[k])};
+let todayList=[],older=null,queue=[],quizPool=[],cur=null,view="feed",since=0,mode="today",batchDate="";
 
-const blank=()=>({sel:[],custom:[],xp:0,streak:{d:"",n:0},favs:[],seen:[],cnt:0,qok:0,bad:[]});
-let S=blank(),user=null,booted=false,recovering=false,signup=false;
-let queue=[],quizPool=[],cur=null,view="feed",tmp=[],since=0,fbBag=[],loadingDb=false,genBusy=new Set(),limitHit=false;
-let saveT,saving=false,again=false,saveOk=true,faltan=[];
-
-/* ---------- guardar progreso en la cuenta ---------- */
-function save(){if(!user)return;clearTimeout(saveT);saveT=setTimeout(push,1200)}
-async function push(){if(!user)return;if(saving){again=true;return}saving=true;
-  const {error}=await sb.from("perfiles").upsert({user_id:user.id,datos:S,actualizado:new Date().toISOString()});
-  saveOk=!error;saving=false;if(view==="me")drawMe();if(again){again=false;push()}}
-async function afterLogin(){
-  const {data}=await sb.from("perfiles").select("datos").eq("user_id",user.id).maybeSingle();
-  S={...blank(),...(data&&data.datos||{})};
-  queue=[];quizPool=[];cur=null;fbBag=[];since=0;
-  booted=true;show("feed");
-}
-
-/* ---------- XP, niveles, racha ---------- */
+/* ---------- XP, racha, progreso del día ---------- */
 function hud(){const lv=Math.floor(S.xp/100);
   $("lvl").textContent=lv+1;$("streak").textContent=S.streak.n;
-  $("ltitle").textContent=TITLES[Math.min(lv,TITLES.length-1)]+" · nivel "+(lv+1);
-  $("xptxt").textContent=(S.xp%100)+" / 100 XP";$("xpbar").style.width=(S.xp%100)+"%"}
-function gain(n){const b=Math.floor(S.xp/100);S.xp+=n;save();
-  const a=Math.floor(S.xp/100);if(a>b)toast("¡Subiste a nivel "+(a+1)+"! Ahora sos "+TITLES[Math.min(a,TITLES.length-1)]);hud()}
+  $("xptxt").textContent="Nivel "+(lv+1)+" · "+(S.xp%100)+" / 100 XP";
+  const seen=new Set(S.seen),tot=todayList.length,read=todayList.filter(x=>seen.has(x.key)).length;
+  $("today").textContent=tot?("Hoy: "+read+" / "+tot+" datos"):"Hoy";
+  $("daybar").style.width=(tot?Math.round(100*read/tot):0)+"%";
+}
+function gain(n){const b=Math.floor(S.xp/100);S.xp+=n;const a=Math.floor(S.xp/100);
+  if(a>b)toast("¡Subiste a nivel "+(a+1)+"! Ahora sos "+TITLES[Math.min(a,TITLES.length-1)]);save();hud()}
 function tickStreak(){const t=day();if(S.streak.d===t)return;S.streak={d:t,n:S.streak.d===day(1)?S.streak.n+1:1};save();if(S.streak.n>1)toast("🔥 Racha de "+S.streak.n+" días");hud()}
 
-/* ---------- temas ---------- */
-function chips(box,list){const all=[...PRE,...S.custom];
-  box.innerHTML=all.map(n=>`<button class="chip" style="--c:${col(n)}" data-n="${esc(n)}" aria-pressed="${list.includes(n)}"><i></i>${esc(n)}${S.custom.includes(n)?' <span class="x" data-del="1" aria-label="Borrar tema">×</span>':''}</button>`).join("")}
-function addTopic(inp,list,cb){const v=inp.value.trim().replace(/\s+/g," ");if(!v)return;
-  if(![...PRE,...S.custom].some(x=>norm(x)===norm(v))){S.custom.push(v)}
-  const n=[...PRE,...S.custom].find(x=>norm(x)===norm(v));if(!list.includes(n))list.push(n);inp.value="";save();cb()}
-const nameOf=k=>S.sel.find(n=>norm(n)===k);
-
-/* ---------- datos: base de datos + IA ---------- */
-const mapRow=r=>({key:"id:"+r.id,id:r.id,t:nameOf(r.tema)||r.tema_nombre,d:r.dato,p:r.porque||"",f:r.fuente||"",
+/* ---------- datos ---------- */
+const mapRow=r=>({key:"id:"+r.id,id:r.id,t:r.tema_nombre,d:r.dato,p:r.porque||"",f:r.fuente||"",
   q:r.pregunta&&Array.isArray(r.opciones)&&Number.isInteger(r.correcta)?{q:r.pregunta,o:r.opciones.map(String),a:r.correcta}:null});
-async function loadDb(){
-  if(loadingDb||!user||!S.sel.length)return;loadingDb=true;updMode();
-  try{
-    const {data,error}=await sb.from("datos").select("id,tema,tema_nombre,dato,porque,fuente,pregunta,opciones,correcta")
-      .in("tema",S.sel.map(norm)).order("creado",{ascending:false}).limit(500);
-    if(error)throw error;
-    const seen=new Set(S.seen),inQ=new Set(queue.map(q=>q.key));if(cur&&cur.key)inQ.add(cur.key);
-    queue.push(...shuffle((data||[]).map(mapRow).filter(x=>!seen.has(x.key)&&!inQ.has(x.key))));
-    const have=new Set(queue.map(q=>norm(q.t)));
-    const falta=S.sel.filter(n=>!have.has(norm(n)));
-    faltan=falta;
-  }catch(e){}
-  loadingDb=false;updMode();
-  if(cur&&cur.loading&&(queue.length||!genBusy.size))next(true);
+const libList=()=>Object.values(T).flatMap(o=>o.f.map(d=>({key:"lib:"+d.slice(0,60),t:o.n,d,p:"",f:"",q:null})));
+async function loadToday(){
+  if(sb){try{
+    const {data:last,error:e1}=await sb.from("datos").select("publicado").order("publicado",{ascending:false}).limit(1);
+    if(e1)throw e1;
+    if(last&&last.length){batchDate=last[0].publicado;
+      const {data,error}=await sb.from("datos").select("id,tema_nombre,dato,porque,fuente,pregunta,opciones,correcta").eq("publicado",batchDate).order("id").limit(500);
+      if(error)throw error;todayList=(data||[]).map(mapRow);return}
+  }catch(e){}}
+  todayList=libList();batchDate="";
 }
-async function gen(name){const k=norm(name);if(genBusy.has(k)||limitHit)return;genBusy.add(k);updMode();
-  try{const {data,error}=await sb.functions.invoke("generar",{body:{tema:name}});
-    if(error){if(error.context&&error.context.status===429){limitHit=true;toast("Llegaste al límite de datos nuevos por hoy. ¡Mañana hay más!")}}
-    else if(data&&Array.isArray(data.datos)){const seen=new Set(S.seen);data.datos.map(mapRow).forEach(x=>{if(!seen.has(x.key))queue.push(x)});shuffle(queue)}
-  }catch(e){}
-  genBusy.delete(k);updMode();if(cur&&cur.loading)next(true);
+async function loadOlder(){
+  if(older)return older;older=[];
+  if(sb&&batchDate){try{
+    const {data}=await sb.from("datos").select("id,tema_nombre,dato,porque,fuente,pregunta,opciones,correcta").lt("publicado",batchDate).order("publicado",{ascending:false}).order("id").limit(1000);
+    older=(data||[]).map(mapRow);
+  }catch(e){}}
+  const seen=new Set(S.seen);older=older.filter(x=>!seen.has(x.key));return older;
 }
-function fallback(){
-  if(!fbBag.length){const src=Object.values(T).filter(o=>S.sel.includes(o.n));const use=src.length?src:Object.values(T);
-    const seen=new Set(S.seen);
-    use.forEach(o=>o.f.forEach(d=>{const key="lib:"+d.slice(0,60);if(!seen.has(key)&&!S.bad.includes(key))fbBag.push({key,t:o.n,d,p:"",f:"",q:null})}));
-    shuffle(fbBag)}
-  return fbBag.pop();
+function buildQueue(list){const seen=new Set(S.seen);queue=list.filter(x=>!seen.has(x.key))}
+function markRead(it){ // se cuenta como leído al tocar "Siguiente"
+  if(!it||!it.key||S.seen.includes(it.key))return;
+  S.seen.push(it.key);if(S.seen.length>20000)S.seen=S.seen.slice(-20000);
+  S.cnt++;gain(5);
+  if(it.id&&sb)sb.rpc("sumar_vista",{p_id:it.id}).then(()=>{},()=>{});
+  if(it.q){quizPool.push({...it.q,t:it.t});if(quizPool.length>8)quizPool.shift()}
+  since++;save();hud();
 }
-function updMode(){$("mode").textContent=faltan.length?"Pronto vas a tener datos nuevos de "+faltan.join(", ")+". Mientras tanto, te mostramos la biblioteca.":"Datos nuevos todos los días, revisados antes de llegar a vos."}
 
 /* ---------- tarjetas ---------- */
-function next(fromLoad){
-  if(!S.sel.length)return;
-  if(!fromLoad&&cur&&cur.d)since++;
-  if(!fromLoad&&since>=5&&quizPool.length){since=0;showQuiz(quizPool.splice(Math.floor(Math.random()*quizPool.length),1)[0]);return}
-  let it=queue.shift();
-  if(!it){
-    if(!fromLoad){cur={loading:true};drawLoad();if(!loadingDb&&!genBusy.size)loadDb();return}
-    if(genBusy.size||loadingDb)return;
-    it=fallback();
-    if(!it){drawDone();return}
-  }
-  if(queue.length<4)loadDb();
-  cur=it;S.cnt++;S.seen.push(it.key);if(S.seen.length>10000)S.seen=S.seen.slice(-10000);
-  if(it.q){quizPool.push({...it.q,t:it.t});if(quizPool.length>8)quizPool.shift()}
-  tickStreak();gain(5);drawFact(it);
-}
-function drawDone(){cur={done:true};
-  setCard(`<div class="body load"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="28" fill="#c8f542"/><path d="M20 33l8 8 16-18" fill="none" stroke="#14122b" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg><p class="fact" style="text-align:center">¡Viste todos los datos de hoy!</p><p style="margin:0">Llevás ${S.cnt} datos aprendidos. Mañana hay datos nuevos: volvé para no perder tu racha 🔥</p></div>`,"#c8f542");
-  $("acts").style.visibility="visible";$("like").disabled=$("copy").disabled=true;$("next").textContent="Buscar datos nuevos";
-  $("mode").textContent="No repetimos datos: cada uno lo ves una sola vez.";
-}
 function setCard(html,c){const k=$("card");k.style.setProperty("--c",c);k.innerHTML=html;k.classList.remove("anim");void k.offsetWidth;k.classList.add("anim")}
-function drawLoad(){setCard(`<div class="body load"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="26" fill="none" stroke="var(--soft)" stroke-width="7"/><path class="spin" d="M32 6a26 26 0 0 1 26 26" fill="none" stroke="#4b3df5" stroke-width="7" stroke-linecap="round"/></svg>Pelaez está buscando datos para vos…</div>`,"#4b3df5");$("acts").style.visibility="hidden"}
+function next(){
+  if(cur&&cur.d)markRead(cur);
+  if(since>=5&&quizPool.length&&!(cur&&cur.quiz)){since=0;showQuiz(quizPool.splice(Math.floor(Math.random()*quizPool.length),1)[0]);return}
+  const it=queue.shift();
+  if(!it){drawDone();return}
+  cur=it;tickStreak();drawFact(it);
+}
 function drawFact(it){
-  setCard(`<div class="head"><span class="tag"></span><span class="src">✓ Verificado</span></div><div class="body"><p class="lead">¿Sabías que…?</p><p class="fact"></p><p class="ref"></p>${it.p?'<div class="why"><button id="whyb" aria-expanded="false">💡 ¿Por qué?</button><p hidden id="whyp"></p></div>':''}</div>`,col(it.t));
+  setCard(`<div class="head"><span class="tag"></span><span class="src">${mode==="today"?"Dato del día":"Dato anterior"}</span></div><div class="body"><p class="lead">¿Sabías que…?</p><p class="fact"></p><p class="ref"></p>${it.p?'<div class="why"><button id="whyb" aria-expanded="false">💡 ¿Por qué?</button><p hidden id="whyp"></p></div>':''}</div>`,col(it.t));
   const k=$("card");k.querySelector(".tag").textContent=it.t;k.querySelector(".fact").textContent=it.d;
-  k.querySelector(".ref").textContent=it.f?"Fuente: "+it.f:"Biblioteca Pelaez Mind, revisada a mano";
+  k.querySelector(".ref").textContent=it.f?"Fuente: "+it.f:"Biblioteca Pelaez Mind";
   if(it.p){k.querySelector("#whyp").textContent=it.p;k.querySelector("#whyb").onclick=e=>{const p=$("whyp"),o=p.hidden;p.hidden=!o;e.currentTarget.setAttribute("aria-expanded",o);if(o&&!it.wx){it.wx=1;gain(2)}}}
-  $("acts").style.visibility="visible";$("like").disabled=$("copy").disabled=false;
-  $("like").setAttribute("aria-pressed",S.favs.some(f=>f.d===it.d));$("next").textContent="Siguiente dato →";
+  $("like").disabled=$("copy").disabled=false;$("report").hidden=false;
+  $("like").setAttribute("aria-pressed",S.liked.includes(it.key));$("next").textContent="Siguiente dato →";
+  $("mode").textContent=mode==="today"?"Todos leen los mismos datos hoy. Cada dato lo ves una sola vez.":"Estás leyendo datos de días anteriores que te perdiste.";
 }
 function showQuiz(q){
   cur={quiz:true};
   setCard(`<div class="head"><span class="tag">Quiz rápido · ${esc(q.t)}</span><span class="src">+20 XP</span></div><div class="body"><p class="lead">A ver si te acordás…</p><p class="fact" style="font-size:clamp(19px,5vw,23px)"></p><div class="opts">${q.o.map((o,i)=>`<button class="opt" data-i="${i}">${esc(o)}</button>`).join("")}</div><p class="res" id="res" aria-live="polite"></p></div>`,col(q.t));
   $("card").querySelector(".fact").textContent=q.q;
-  $("like").disabled=$("copy").disabled=true;$("next").textContent="Saltar →";
+  $("like").disabled=$("copy").disabled=true;$("report").hidden=true;$("next").textContent="Saltar →";
   $("card").querySelector(".opts").onclick=e=>{const b=e.target.closest(".opt");if(!b||cur.done)return;cur.done=1;
     const i=+b.dataset.i,bs=[...$("card").querySelectorAll(".opt")];if(bs[q.a])bs[q.a].classList.add("ok");
     if(i===q.a){S.qok++;$("res").textContent="¡Bien ahí! +20 XP";gain(20)}else{b.classList.add("bad");$("res").textContent="Casi. La correcta está en verde."}
-    $("next").textContent="Seguir aprendiendo →"};
+    $("next").textContent="Seguir →"};
+}
+async function drawDone(){
+  cur={done:true};$("like").disabled=$("copy").disabled=true;$("report").hidden=true;
+  const prev=mode==="today"?(await loadOlder()).length:0;
+  const tot=todayList.length;
+  setCard(`<div class="body load done"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="28" fill="#c8f542"/><path d="M20 33l8 8 16-18" fill="none" stroke="#14122b" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg><p class="fact">${mode==="today"?"¡Leíste los "+tot+" datos de hoy!":"¡Te pusiste al día!"}</p><p>Llevás ${S.cnt} datos aprendidos en total. Mañana hay datos nuevos: volvé para no perder tu racha 🔥</p></div>`,"#c8f542");
+  if(prev){$("next").textContent="Leer "+prev+" datos que te perdiste →";$("next").onclick=()=>{mode="older";queue=older.slice();older=[];$("next").onclick=null;cur=null;next()}}
+  else{$("next").textContent="Volvé mañana 👋";$("next").onclick=()=>toast("Mañana hay datos nuevos")}
+  $("mode").textContent="No repetimos datos: cada uno lo ves una sola vez.";
+}
+
+/* ---------- intro diaria ---------- */
+function intro(n){
+  if(ld("intro","")===day()){return Promise.resolve()}
+  return new Promise(res=>{
+    const el=$("intro");el.hidden=false;
+    const d=new Date();const ds=d.toLocaleDateString("es-AR",{weekday:"long",day:"numeric",month:"long"});$("i-date").textContent=ds.charAt(0).toUpperCase()+ds.slice(1);
+    const names=Object.values(T).map(o=>o.n);
+    $("orbit").innerHTML=names.map((t,i)=>`<span style="--i:${i};--n:${names.length};--c:${col(t)}">${esc(t)}</span>`).join("");
+    const num=$("i-num"),dur=matchMedia("(prefers-reduced-motion: reduce)").matches?0:1600,t0=performance.now();
+    const tick=now=>{const p=dur?Math.min(1,(now-t0)/dur):1;num.textContent=Math.round(n*(1-Math.pow(1-p,3)));if(p<1)requestAnimationFrame(tick);else el.classList.add("ready")};
+    requestAnimationFrame(tick);
+    $("i-go").onclick=()=>{sv("intro",day());el.classList.add("out");setTimeout(()=>{el.hidden=true;res()},dur?450:0)};
+  });
 }
 
 /* ---------- vistas ---------- */
 function drawFavs(){const L=$("favlist");
   if(!S.favs.length){L.innerHTML=`<div class="empty"><b>Todavía no guardaste ningún dato.</b><br>Tocá el corazón en los que te gusten y te quedan acá para repasar.</div>`;return}
   L.innerHTML=S.favs.map((f,i)=>`<div class="fav"><span class="tag" style="background:${col(f.t)}">${esc(f.t)}</span><p>${esc(f.d)}</p><button data-i="${i}">Quitar</button></div>`).join("")}
-function drawMe(){const lv=Math.floor(S.xp/100);
-  $("acct-mail").textContent=user?user.email:"";
-  $("acct-state").textContent=saveOk?"Tu progreso está guardado en tu cuenta.":"No se pudo guardar recién; se reintenta solo.";
-  const s=[["Nivel "+(lv+1),TITLES[Math.min(lv,TITLES.length-1)],1],[S.streak.n+(S.streak.n===1?" día":" días"),"Racha actual"],[S.cnt,"Datos aprendidos"],[S.qok,"Quizzes acertados"]];
-  $("stats").innerHTML=s.map(x=>`<div class="stat${x[2]?' hl':''}"><b>${esc(x[0])}</b><span>${esc(x[1])}</span></div>`).join("");
-  chips($("chips-me"),S.sel)}
-function show(v){
-  view=v;
-  const st=!configured?"config":!booted?"boot":(!user||recovering)?"auth":!S.sel.length?"onb":"app";
-  $("v-config").hidden=st!=="config";$("v-boot").hidden=st!=="boot";$("v-auth").hidden=st!=="auth";$("v-onb").hidden=st!=="onb";
-  $("nav").hidden=$("pills").hidden=st!=="app";
-  ["feed","favs","me"].forEach(x=>$("v-"+x).hidden=st!=="app"||x!==v);
+function drawMe(){const lv=Math.floor(S.xp/100),seen=new Set(S.seen),read=todayList.filter(x=>seen.has(x.key)).length;
+  const s=[["Nivel "+(lv+1),TITLES[Math.min(lv,TITLES.length-1)],1],[S.streak.n+(S.streak.n===1?" día":" días"),"Racha actual"],[read+" / "+todayList.length,"Datos de hoy"],[S.cnt,"Datos aprendidos"],[S.qok,"Quizzes acertados"],[S.favs.length,"Favoritos"]];
+  $("stats").innerHTML=s.map(x=>`<div class="stat${x[2]?' hl':''}"><b>${esc(x[0])}</b><span>${esc(x[1])}</span></div>`).join("")}
+function show(v){view=v;["feed","favs","me"].forEach(x=>$("v-"+x).hidden=x!==v);
   document.querySelectorAll("nav button").forEach(b=>{if(b.dataset.v===v)b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});
-  if(st==="auth"){$("f-auth").hidden=recovering;$("f-reset").hidden=!recovering;document.querySelector(".tabs").hidden=recovering}
-  if(st==="onb"){chips($("chips-onb"),tmp);$("start").disabled=!tmp.length}
-  if(st==="app"){if(v==="favs")drawFavs();if(v==="me")drawMe();if(v==="feed"&&!cur)next();updMode()}
-  hud();window.scrollTo(0,0);
-}
+  if(v==="favs")drawFavs();if(v==="me")drawMe();hud();window.scrollTo(0,0)}
 
-/* ---------- cuenta: registro, ingreso, contraseña ---------- */
-const traducir=m=>/invalid login/i.test(m)?"Mail o contraseña incorrectos.":/not confirmed/i.test(m)?"Todavía no confirmaste tu mail. Buscá el mail de confirmación (mirá también en spam).":/already registered|already exists/i.test(m)?"Ya hay una cuenta con ese mail. Probá en Ingresar.":/rate limit|too many/i.test(m)?"Demasiados intentos seguidos. Esperá unos minutos y probá de nuevo.":/password/i.test(m)?"La contraseña no es válida: usá al menos 8 caracteres.":/email/i.test(m)?"Revisá que el mail esté bien escrito.":"Algo falló: "+m;
-function setTab(up){signup=up;$("t-in").setAttribute("aria-pressed",!up);$("t-up").setAttribute("aria-pressed",up);
-  $("a-btn").textContent=up?"Crear cuenta":"Ingresar";$("a-pass").autocomplete=up?"new-password":"current-password";$("a-msg").textContent="";$("a-forgot").hidden=up}
-$("t-in").onclick=()=>setTab(false);$("t-up").onclick=()=>setTab(true);
-$("a-eye").onclick=()=>{const p=$("a-pass"),s=p.type==="password";p.type=s?"text":"password";$("a-eye").textContent=s?"Ocultar":"Ver"};
-const back=()=>location.origin+location.pathname;
-$("f-auth").addEventListener("submit",async e=>{e.preventDefault();
-  const email=$("a-mail").value.trim(),password=$("a-pass").value,m=$("a-msg");m.className="msg";
-  if(!/^\S+@\S+\.\S+$/.test(email)){m.textContent="Revisá que el mail esté bien escrito.";return}
-  if(password.length<8){m.textContent="La contraseña tiene que tener al menos 8 caracteres.";return}
-  $("a-btn").disabled=true;m.textContent=signup?"Creando tu cuenta…":"Ingresando…";
-  const r=signup?await sb.auth.signUp({email,password,options:{emailRedirectTo:back()}}):await sb.auth.signInWithPassword({email,password});
-  $("a-btn").disabled=false;
-  if(r.error){m.textContent=traducir(r.error.message||"");return}
-  if(signup&&!r.data.session){m.className="msg ok";m.textContent="¡Cuenta creada! Te mandamos un mail a "+email+". Abrí el link para confirmarla y después ingresá. Si no lo ves, mirá en spam."}
-  else m.textContent="";
-});
-$("a-forgot").onclick=async()=>{const email=$("a-mail").value.trim(),m=$("a-msg");m.className="msg";
-  if(!/^\S+@\S+\.\S+$/.test(email)){m.textContent="Escribí tu mail arriba y tocá de nuevo «Me olvidé la contraseña».";return}
-  const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:back()});
-  if(error){m.textContent=traducir(error.message||"");return}
-  m.className="msg ok";m.textContent="Si hay una cuenta con ese mail, te llega un link para elegir una contraseña nueva."};
-$("f-reset").addEventListener("submit",async e=>{e.preventDefault();const password=$("r-pass").value,m=$("r-msg");
-  if(password.length<8){m.textContent="Usá al menos 8 caracteres.";return}
-  const {error}=await sb.auth.updateUser({password});
-  if(error){m.textContent=traducir(error.message||"");return}
-  recovering=false;toast("Contraseña actualizada");if(user)afterLogin();else show("feed")});
-$("logout").onclick=async()=>{clearTimeout(saveT);await push();await sb.auth.signOut()};
-
-/* ---------- eventos de la app ---------- */
-$("chips-onb").addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;const n=b.dataset.n;
-  if(e.target.dataset.del){S.custom=S.custom.filter(x=>x!==n);tmp=tmp.filter(x=>x!==n);save();show("feed");return}
-  tmp=tmp.includes(n)?tmp.filter(x=>x!==n):[...tmp,n];b.setAttribute("aria-pressed",tmp.includes(n));$("start").disabled=!tmp.length});
-$("add-onb").addEventListener("submit",e=>{e.preventDefault();addTopic($("in-onb"),tmp,()=>show("feed"))});
-$("start").addEventListener("click",()=>{S.sel=tmp.slice();save();show("feed")});
-$("chips-me").addEventListener("click",e=>{const b=e.target.closest(".chip");if(!b)return;const n=b.dataset.n;
-  if(S.sel.includes(n)&&S.sel.length===1){toast("Dejá al menos un tema");return}
-  if(e.target.dataset.del){S.custom=S.custom.filter(x=>x!==n);S.sel=S.sel.filter(x=>x!==n);queue=queue.filter(q=>q.t!==n);save();drawMe();return}
-  S.sel=S.sel.includes(n)?S.sel.filter(x=>x!==n):[...S.sel,n];save();b.setAttribute("aria-pressed",S.sel.includes(n));
-  queue=queue.filter(q=>S.sel.includes(q.t));fbBag=[]});
-$("add-me").addEventListener("submit",e=>{e.preventDefault();addTopic($("in-me"),S.sel,()=>{fbBag=[];drawMe();toast("Tema sumado");loadDb()})});
-$("next").addEventListener("click",()=>next());
-$("like").addEventListener("click",()=>{if(!cur||!cur.d)return;const on=S.favs.some(f=>f.d===cur.d);
-  S.favs=on?S.favs.filter(f=>f.d!==cur.d):[{t:cur.t,d:cur.d},...S.favs];save();$("like").setAttribute("aria-pressed",!on);toast(on?"Quitado de favoritos":"Guardado en favoritos")});
-$("copy").addEventListener("click",async()=>{if(!cur||!cur.d)return;try{await navigator.clipboard.writeText("¿Sabías que "+cur.d.charAt(0).toLowerCase()+cur.d.slice(1)+" — vía Pelaez Mind");toast("Dato copiado")}catch(e){toast("No se pudo copiar")}});
-$("report").addEventListener("click",async()=>{if(!cur||!cur.d)return;const it=cur;
-  if(!S.bad.includes(it.key)){S.bad.push(it.key);if(S.bad.length>300)S.bad=S.bad.slice(-300)}
-  S.favs=S.favs.filter(f=>f.d!==it.d);save();toast("Gracias. Lo revisamos y no te lo volvemos a mostrar");next();
-  if(it.id)await sb.from("reportes").insert({dato_id:it.id})});
+/* ---------- eventos ---------- */
+$("next").addEventListener("click",()=>{if(!$("next").onclick)next()});
+$("like").addEventListener("click",()=>{if(!cur||!cur.d)return;const k=cur.key;
+  if(S.liked.includes(k)){S.liked=S.liked.filter(x=>x!==k);S.favs=S.favs.filter(f=>f.d!==cur.d);$("like").setAttribute("aria-pressed",false);toast("Quitado de favoritos")}
+  else{S.liked.push(k);S.favs.unshift({t:cur.t,d:cur.d});$("like").setAttribute("aria-pressed",true);toast("¡Te gustó! Guardado en favoritos");
+    if(cur.id&&sb)sb.rpc("sumar_like",{p_id:cur.id}).then(()=>{},()=>{})}
+  save()});
+$("copy").addEventListener("click",async()=>{if(!cur||!cur.d)return;
+  const txt="🧠 ¿Sabías que "+cur.d.charAt(0).toLowerCase()+cur.d.slice(1)+"\n\nMás datos curiosos todos los días en "+SITE;
+  try{if(navigator.share){await navigator.share({text:txt});return}}catch(e){if(e&&e.name==="AbortError")return}
+  try{await navigator.clipboard.writeText(txt);toast("Dato copiado: pegalo donde quieras")}catch(e){toast("No se pudo copiar")}});
+$("report").addEventListener("click",()=>{if(!cur||!cur.d)return;const it=cur;
+  if(!S.reported.includes(it.key)){S.reported.push(it.key);if(it.id&&sb)sb.rpc("reportar_dato",{p_id:it.id}).then(()=>{},()=>{})}
+  S.favs=S.favs.filter(f=>f.d!==it.d);save();toast("Gracias por avisar. Lo vamos a revisar");next()});
 $("favlist").addEventListener("click",e=>{const b=e.target.closest("button[data-i]");if(!b)return;S.favs.splice(+b.dataset.i,1);save();drawFavs()});
 document.querySelectorAll("nav button").forEach(b=>b.addEventListener("click",()=>show(b.dataset.v)));
 let x0=null;const card=$("card");
 card.addEventListener("pointerdown",e=>{x0=e.clientX});
-card.addEventListener("pointerup",e=>{if(x0!==null&&e.clientX-x0<-60&&cur&&!cur.loading)next();x0=null});
-document.addEventListener("keydown",e=>{if(view==="feed"&&!$("v-feed").hidden&&e.key==="ArrowRight"&&e.target===document.body){e.preventDefault();next()}});
-document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden"&&user){clearTimeout(saveT);push()}});
+card.addEventListener("pointerup",e=>{if(x0!==null&&e.clientX-x0<-60&&cur&&cur.d)next();x0=null});
+document.addEventListener("keydown",e=>{if(view==="feed"&&e.key==="ArrowRight"&&e.target===document.body&&!$("next").onclick){e.preventDefault();next()}});
 
 /* ---------- arranque ---------- */
-if(!sb){show("feed")}
-else{
-  sb.auth.onAuthStateChange((ev,session)=>{
-    if(ev==="PASSWORD_RECOVERY"){recovering=true;user=session&&session.user;booted=true;setTimeout(()=>show("feed"),0);return}
-    const u=session&&session.user;
-    if(u&&(!user||user.id!==u.id)){user=u;setTimeout(afterLogin,0)}
-    else if(!u){user=null;S=blank();queue=[];cur=null;tmp=[];booted=true;setTimeout(()=>show("feed"),0)}
-  });
-  show("feed");
-}
+setCard(`<div class="body load"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="26" fill="none" stroke="var(--soft)" stroke-width="7"/><path class="spin" d="M32 6a26 26 0 0 1 26 26" fill="none" stroke="#4b3df5" stroke-width="7" stroke-linecap="round"/></svg>Cargando los datos de hoy…</div>`,"#4b3df5");
+show("feed");
+loadToday().then(async()=>{
+  buildQueue(todayList);hud();
+  await intro(todayList.length);
+  next();
+});
 }
 </script>
 </body>
