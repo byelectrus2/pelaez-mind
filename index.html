@@ -136,7 +136,7 @@ nav button[aria-current=page]{color:var(--brand);background:var(--soft)}
 
   <section id="v-auth" hidden>
     <h1>Aprendé algo nuevo <em>en cada toque</em>.</h1>
-    <p class="sub">Datos curiosos sin fin sobre lo que te gusta, revisados dos veces, con quiz, niveles y racha. Creá tu cuenta gratis para no perder tu progreso.</p>
+    <p class="sub">Datos curiosos nuevos todos los días sobre lo que te gusta, revisados, con quiz, niveles y racha. Creá tu cuenta gratis para no perder tu progreso.</p>
     <div class="tabs" role="group" aria-label="Elegí una opción">
       <button type="button" id="t-in" aria-pressed="true">Ingresar</button>
       <button type="button" id="t-up" aria-pressed="false">Crear cuenta</button>
@@ -192,7 +192,7 @@ nav button[aria-current=page]{color:var(--brand);background:var(--soft)}
     <p class="sub">Tocá para activar o desactivar. Podés sumar cualquier tema que se te ocurra.</p>
     <div class="chips" id="chips-me"></div>
     <form class="add" id="add-me"><input id="in-me" maxlength="40" placeholder="Nuevo tema…" aria-label="Agregar tema propio"><button>Sumar</button></form>
-    <p class="note">Cómo cuidamos la info: cada dato lo escribe una IA y otra IA más rigurosa lo revisa (dato, explicación, quiz y fuente). Si hay cualquier duda, se descarta. Si varias personas reportan un dato, se oculta para todos automáticamente.</p>
+    <p class="note">Cómo cuidamos la info: cada dato se revisa antes de publicarse (dato, explicación, quiz y fuente), y si hay dudas se descarta. Si varias personas reportan un dato, se oculta para todos automáticamente.</p>
   </section>
 </div>
 
@@ -343,7 +343,7 @@ const sb=configured?window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY)
 const blank=()=>({sel:[],custom:[],xp:0,streak:{d:"",n:0},favs:[],seen:[],cnt:0,qok:0,bad:[]});
 let S=blank(),user=null,booted=false,recovering=false,signup=false;
 let queue=[],quizPool=[],cur=null,view="feed",tmp=[],since=0,fbBag=[],loadingDb=false,genBusy=new Set(),limitHit=false;
-let saveT,saving=false,again=false,saveOk=true;
+let saveT,saving=false,again=false,saveOk=true,faltan=[];
 
 /* ---------- guardar progreso en la cuenta ---------- */
 function save(){if(!user)return;clearTimeout(saveT);saveT=setTimeout(push,1200)}
@@ -387,7 +387,7 @@ async function loadDb(){
     queue.push(...shuffle((data||[]).map(mapRow).filter(x=>!seen.has(x.key)&&!inQ.has(x.key))));
     const have=new Set(queue.map(q=>norm(q.t)));
     const falta=S.sel.filter(n=>!have.has(norm(n)));
-    if(falta.length&&!limitHit)gen(falta[Math.floor(Math.random()*falta.length)]);
+    faltan=falta;
   }catch(e){}
   loadingDb=false;updMode();
   if(cur&&cur.loading&&(queue.length||!genBusy.size))next(true);
@@ -407,7 +407,7 @@ function fallback(){
     shuffle(fbBag)}
   return fbBag.pop();
 }
-function updMode(){$("mode").textContent=genBusy.size?"Pelaez está escribiendo y verificando datos nuevos para vos…":limitHit?"Por hoy ya generaste muchos datos nuevos: seguís con la biblioteca. Mañana hay más.":"Datos nuevos todos los días, revisados dos veces antes de llegar a vos."}
+function updMode(){$("mode").textContent=faltan.length?"Pronto vas a tener datos nuevos de "+faltan.join(", ")+". Mientras tanto, te mostramos la biblioteca.":"Datos nuevos todos los días, revisados antes de llegar a vos."}
 
 /* ---------- tarjetas ---------- */
 function next(fromLoad){
